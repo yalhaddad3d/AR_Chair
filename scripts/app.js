@@ -4,15 +4,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createScene() {
         var scene = new BABYLON.Scene(engine);
-        var xr = scene.createDefaultXRExperienceAsync();
+        var camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2, 3, BABYLON.Vector3.Zero(), scene);
+        camera.attachControl(canvas, true);
 
         BABYLON.SceneLoader.ImportMesh('', 'assets/chair.glb', '', scene, function (meshes) {
             var chair = meshes[0];
-            chair.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1); // Example scaling
-
-            xr.input.onControllerAddedObservable.add(function (controller) {
-                // Example: chair.position = controller.pointer.absolutePosition;
-            });
+            chair.position.y = 0; // Example positioning
         }, null, function (scene, message, exception) {
             console.error('Unable to load model:', message, exception);
         });
