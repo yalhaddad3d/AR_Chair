@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Create a WebXR experience
         var xr = scene.createDefaultXRExperienceAsync({
-            disableTeleportation: true // Disable Babylon's default teleportation
+            // Disable Babylon's default teleportation system
+            disableTeleportation: true
         }).then(function (xr) {
             // Callback function when XR session is started
             xr.enterXRAsync('immersive-ar', 'local').then(function () {
