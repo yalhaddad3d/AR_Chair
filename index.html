@@ -19,11 +19,11 @@
     <script>
         // Define global variables
         let scene, camera, renderer;
-        let arButton;
-        let controller;
+        let xrSession, xrRefSpace;
+        let model;
 
         // Function to initialize the AR scene
-        function init() {
+        async function init() {
             // Create a Three.js scene
             scene = new THREE.Scene();
 
@@ -35,55 +35,25 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.getElementById('ar-view').appendChild(renderer.domElement);
 
-            // Add ambient light to the scene
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-            scene.add(ambientLight);
+            // Initialize WebXR
+            const session = await navigator.xr.requestSession('immersive-ar', {
+                requiredFeatures: ['hit-test'],
+            });
+            xrSession = session;
+            const refSpace = await xrSession.requestReferenceSpace('viewer');
+            xrRefSpace = refSpace;
 
             // Load the GLB model
             const loader = new THREE.GLTFLoader();
             loader.load('models/chair.glb', function (gltf) {
-                const model = gltf.scene;
+                model = gltf.scene;
                 model.scale.set(0.1, 0.1, 0.1); // Scale the model as needed
                 scene.add(model);
             });
 
-            // Initialize WebXR
-            const xrButton = new THREE.XRControllerButton(renderer);
-            xrButton.addEventListener('connected', function (event) {
-                controller = event.detail;
-                scene.add(controller);
-            });
-
-            // Set up WebXR session
-            const button = new THREE.XRButton(renderer);
-            button.addEventListener('selectstart', function () {
-                if (controller) controller.userData.select();
-            });
-
-            // Handle resize events
-            window.addEventListener('resize', onWindowResize, false);
+            // Start the render loop
+            xrSession.requestAnimationFrame(onXRFrame);
         }
 
-        // Function to handle window resize
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        // Function to animate the scene
-        function animate() {
-            renderer.setAnimationLoop(render);
-        }
-
-        // Function to render the scene
-        function render() {
-            renderer.render(scene, camera);
-        }
-
-        // Initialize the AR scene
-        init();
-        animate();
-    </script>
-</body>
-</html>
+        // Function to handle XR frame rendering
+        function onXRFrame(time, xrFrame) 
