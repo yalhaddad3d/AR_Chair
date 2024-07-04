@@ -4,18 +4,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createScene() {
         var scene = new BABYLON.Scene(engine);
-        
+
         // Create a WebXR experience
         var xr = scene.createDefaultXRExperienceAsync({
-            floorMeshes: [], // Disable Babylon's default floor
-            disableTeleportation: true // Disable teleportation (optional)
+            // Disable Babylon's default teleportation system
+            disableTeleportation: true
         }).then(function (xr) {
             // Callback function when XR session is started
-            xr.enterXRAsync('immersive-ar', 'local-floor').then(function () {
+            xr.enterXRAsync('immersive-ar', 'local').then(function () {
+                // XR session started successfully
                 // Create an XR background layer
                 var xrBackground = xr.baseExperience.featuresManager.enableFeature(
                     BABYLON.WebXRBackgroundRemover.Name,
-                    'xrb',
+                    'xr-background',
                     {
                         depthValues: [0.3, 0.8], // Depth range for background removal
                         boxBlurRadius: 5, // Blur radius for smoother edges
@@ -30,7 +31,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }, null, function (scene, message, exception) {
                     console.error('Unable to load model:', message, exception);
                 });
+            }).catch(function (error) {
+                console.error('Error entering XR:', error);
             });
+        }).catch(function (error) {
+            console.error('Error creating XR experience:', error);
         });
 
         return scene;
