@@ -28,21 +28,22 @@
 <body style="margin: 0; overflow: hidden;">
     <!-- A-Frame Scene -->
     <a-scene
-        vr-mode-ui="enabled: false"  <!-- Disable VR mode UI -->
-        embedded                     <!-- Embed the scene within the webpage -->
+        vr-mode-ui="enabled: false"          <!-- Disable VR mode UI -->
+        embedded                             <!-- Embed the scene within the webpage -->
         arjs="sourceType: webcam; debugUIEnabled: false;"  <!-- Configure AR.js for webcam-based AR -->
     >
         <!-- Define the chair model to display -->
         <a-entity
-            gltf-model="assets/chair.glb"  <!-- Path to your chair model -->
-            scale="0.1 0.1 0.1"             <!-- Scale the model to an appropriate size -->
-            position="0 0 0"                <!-- Position the model at the origin -->
-            rotation="0 0 0"                <!-- Optional: Adjust rotation if needed -->
+            gltf-model="assets/chair.glb"     <!-- Path to your chair model -->
+            scale="0.1 0.1 0.1"                <!-- Scale the model to an appropriate size -->
+            position="0 0 -5"                 <!-- Adjust position to place it in front of the camera -->
+            rotation="0 0 0"                  <!-- Optional: Adjust rotation if needed -->
+            shadow="cast: true; receive: false;"  <!-- Enable shadow casting -->
             arjs-hit-testing="enabled: true"  <!-- Enable hit testing for placing the model -->
         ></a-entity>
         
         <!-- Camera and light setup -->
-        <a-entity camera></a-entity>    <!-- Include a camera in the scene -->
+        <a-entity camera></a-entity>          <!-- Include a camera in the scene -->
         <a-light type="ambient" intensity="2"></a-light>  <!-- Ambient light for the scene -->
     </a-scene>
 </body>
