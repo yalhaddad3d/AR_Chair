@@ -56,4 +56,27 @@
         }
 
         // Function to handle XR frame rendering
-        function onXRFrame(time, xrFrame) 
+        function onXRFrame(time, xrFrame) {
+            const session = xrFrame.session;
+            const pose = xrFrame.getViewerPose(xrRefSpace);
+
+            if (pose) {
+                const view = pose.views[0];
+                const viewport = session.renderState.baseLayer.getViewport(view);
+                renderer.setSize(viewport.width, viewport.height);
+                camera.projectionMatrix.fromArray(view.projectionMatrix);
+                const viewMatrix = new THREE.Matrix4().fromArray(view.transform.inverse.matrix);
+                camera.matrixWorldInverse.copy(viewMatrix);
+                camera.updateMatrixWorld(true);
+
+                renderer.render(scene, camera);
+            }
+
+            xrSession.requestAnimationFrame(onXRFrame);
+        }
+
+        // Initialize the AR scene
+        init();
+    </script>
+</body>
+</html>
